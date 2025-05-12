@@ -127,7 +127,7 @@ Reflexión sobre el aprendizaje, utilidad del sistema, aplicación real en la em
 ---
 
 <p align="center">
-  Desarrollado con 💻 y ☕ por <strong>[Abel Sánchez]</strong><br>
+  Desarrollado con 💻 y ☕ por <strong>Abel Sánchez</strong><br>
   Proyecto de Fin de Grado – CFGS Administración de Sistemas Informáticos en Red<br>
   Empresa colaboradora: <strong>Geotexan S.A.</strong><br>
   © 2025
