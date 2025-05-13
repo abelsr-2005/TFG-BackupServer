@@ -165,13 +165,15 @@ Este proyecto ha permitido resolver una necesidad real del entorno de prácticas
 ---
 
 <p align="center">
-  Hecho con 💻, café ☕ y mucho esfuerzo por  
-  <strong>Abel Sánchez Rodríguez</strong><br><br>
-  <em>Proyecto de Fin de Ciclo – Administración de Sistemas Informáticos en Red</em><br>
-  <strong>IES La Marisma</strong> – Curso 2024/2025<br><br>
-  📍 Huelva, España
+  <strong>Abel Sánchez Ramos</strong>  
+  · <em>CFGS Administración de Sistemas Informáticos en Red</em>  
+  <br>
+  <strong>IES La Marisma – Proyecto Integrado 2024/2025</strong>
+  <br><br>
+  🛠️ Tecnología libre · 📦 Respaldos automatizados · 🌐 Infraestructura real  
 </p>
 
 <p align="center">
-  <sub>Repositorio mantenido con fines educativos como parte del Módulo de Proyecto Integrado</sub>
+  <sub>Este repositorio ha sido creado con el objetivo de documentar, automatizar y supervisar un sistema real de copias de seguridad durante el módulo de FCT.</sub>
 </p>
+
