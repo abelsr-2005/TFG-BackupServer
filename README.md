@@ -51,13 +51,14 @@ Implantar un sistema automatizado de copias de seguridad en red con herramientas
 
 ---
 
-# 3. 🧩 Análisis del entorno
+## 3. 🧩 Análisis del entorno
 
-- Equipos con Windows sin backup.
-- Red local básica sin VLAN ni DHCP avanzado.
-- Necesidad de respaldo confiable, automatizado y restaurable.
+En el entorno de trabajo del laboratorio de la empresa **Geotexan**, los equipos informáticos operaban bajo sistemas Windows sin contar con ningún sistema de copias de seguridad implantado. Esta situación suponía un riesgo significativo de pérdida de datos, así como una alta dependencia de procedimientos manuales en caso de fallo, avería o reinstalación del sistema operativo.
 
-Se utilizó una máquina virtual en Proxmox para montar el servidor Debian central.
+La red local existente era funcional pero básica, sin segmentación mediante VLANs ni un sistema de asignación dinámica de direcciones avanzado (DHCP). Esto limitaba las posibilidades de gestión y automatización del entorno.
+
+Como parte del proyecto, se aprovechó una **máquina virtualizada en Hyper-V alojada en un servidor Windows Server** ya disponible en la infraestructura de la empresa, sobre la que se desplegó un sistema **Debian 12**. Este servidor actuaría como **repositorio centralizado de las copias de seguridad**, accesible desde cualquier equipo del laboratorio mediante protocolo SSH. Esta decisión permitió reducir costes y aprovechar los recursos ya existentes en la organización.
+
 
 ---
 
@@ -77,6 +78,10 @@ Se utilizó una máquina virtual en Proxmox para montar el servidor Debian centr
 
 # 5. 🧱 Diseño del sistema
 
+El diseño del sistema se ha planteado con una arquitectura sencilla, modular y eficiente, basada completamente en software libre. El objetivo ha sido permitir que cualquier equipo del laboratorio pueda realizar una copia de seguridad a través de Clonezilla, almacenando la imagen generada en un servidor central Debian.
+
+### 📐 Esquema general del sistema
+
 ```plaintext
 [Equipo cliente] <-- Clonezilla Live --> [Servidor Debian]
                                          ├── SSH (backup)
@@ -85,6 +90,16 @@ Se utilizó una máquina virtual en Proxmox para montar el servidor Debian centr
                                          └── NGINX (puerto 80)
 ```
 
+El flujo del sistema es el siguiente:
+
+1. El equipo cliente se arranca con Clonezilla Live desde USB.
+2. Se conecta por SSH al servidor Debian configurado como destino.
+3. Se genera una imagen del disco y se transfiere automáticamente.
+4. La imagen se guarda en una carpeta identificada por el nombre del equipo.
+5. La interfaz Flask consulta el estado de estas carpetas para mostrar la información.
+
+### 🗂️ Estructura de almacenamiento en el servidor
+Las imágenes se organizan en subdirectorios dentro de /backup-imagenes, uno por cada equipo, utilizando el nombre del host y la fecha como identificador de la copia:
 ```plaintext
 /backup-imagenes/
 ├── EQUIPO01/
@@ -92,6 +107,8 @@ Se utilizó una máquina virtual en Proxmox para montar el servidor Debian centr
 └── EQUIPO02/
     └── EQUIPO02_2024-05-03_10-00/
 ```
+
+Esta estructura permite localizar rápidamente las copias por equipo y fecha, facilitando la restauración en caso necesario, así como la visualización desde la interfaz web.
 
 ---
 
