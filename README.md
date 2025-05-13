@@ -173,7 +173,7 @@ Este proyecto ha permitido resolver una necesidad real del entorno de prácticas
   🛠️ Tecnología libre · 📦 Respaldos automatizados · 🌐 Infraestructura real  
 </p>
 
+---
 <p align="center">
-  <sub>Este repositorio ha sido creado con el objetivo de documentar, automatizar y supervisar un sistema real de copias de seguridad durante el módulo de FCT.</sub>
+  <sub>Repositorio documentado y estructurado como parte del módulo FCT. Proyecto técnico orientado a la resolución de un problema real en entorno empresarial.</sub>
 </p>
-
