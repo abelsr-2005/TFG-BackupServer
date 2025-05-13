@@ -113,10 +113,7 @@ El sistema corre sobre NGINX configurado como proxy inverso, lo que permite ofre
 
 ---
 
-
----
-
-## 📋 Planificación de tareas
+## 9. 📋 Planificación de tareas
 
 A continuación se detallan las tareas realizadas durante el desarrollo del proyecto, junto con una estimación de tiempo invertido:
 
