@@ -26,9 +26,12 @@ Como complemento, se ha desarrollado una pequeña interfaz web usando Flask y se
 
 # 1. 📘 Introducción
 
-Durante el módulo de FCT en la empresa Geotexan se detectó que los equipos del laboratorio no contaban con un sistema de copias de seguridad. Esto suponía un riesgo elevado de pérdida de datos y tiempos largos de recuperación ante fallos.
+Durante el desarrollo del módulo de Formación en Centros de Trabajo (FCT) en la empresa **Geotexan**, se identificó una carencia crítica en la infraestructura informática del laboratorio: **la ausencia de un sistema de copias de seguridad**. Esta situación implicaba un alto riesgo de pérdida de datos ante posibles fallos, así como tiempos prolongados de recuperación en caso de avería o restauración de sistemas.
 
-Este proyecto desarrolla una solución completa de respaldo automatizado basada en Clonezilla y un servidor Debian, monitorizable desde una interfaz web y con alertas por correo. Todo con tecnologías libres.
+Ante este escenario, se planteó como objetivo implementar una solución integral de respaldo automatizado que permitiera **garantizar la disponibilidad, integridad y recuperación de los equipos del laboratorio**. La solución diseñada se basa en herramientas de software libre y combina el uso de **Clonezilla Live para la creación de imágenes de disco**, un **servidor Debian 12 para el almacenamiento centralizado de copias**, y una **interfaz web desarrollada con Flask** que permite supervisar de forma visual el estado de los respaldos. Además, se integró un sistema de notificaciones por correo que informa sobre el resultado de cada proceso de copia.
+
+Este proyecto busca no solo resolver una necesidad real de la empresa, sino también servir como ejemplo práctico y aplicable de automatización y administración de sistemas en entornos productivos.
+
 
 ---
 
