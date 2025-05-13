@@ -173,7 +173,6 @@ Este proyecto ha permitido resolver una necesidad real del entorno de prácticas
   🛠️ Tecnología libre · 📦 Respaldos automatizados · 🌐 Infraestructura real  
 </p>
 
----
 <p align="center">
   <sub>Repositorio documentado y estructurado como parte del módulo FCT. Proyecto técnico orientado a la resolución de un problema real en entorno empresarial.</sub>
 </p>
