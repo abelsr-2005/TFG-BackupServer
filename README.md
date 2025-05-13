@@ -1,6 +1,6 @@
 # Proyecto TFG – Sistema de copias de seguridad con Clonezilla y servidor Debian
 
-## 📌 Resumen
+# 📌 Resumen
 
 Este proyecto consiste en la implantación de un sistema de copias de seguridad para los equipos del laboratorio de la empresa Geotexan, utilizando Clonezilla Live y un servidor Debian 12 con SSH. Las copias generadas se almacenan en dicho servidor de forma centralizada y segura, permitiendo su restauración en caso de error crítico, mantenimiento o avería.
 
@@ -8,7 +8,7 @@ Como complemento, se ha desarrollado una pequeña interfaz web usando Flask y se
 
 ---
 
-## 📚 Índice
+# 📚 Índice
 
 1. [Introducción](#1-introducción)  
 2. [Objetivos](#2-objetivos)  
@@ -24,7 +24,7 @@ Como complemento, se ha desarrollado una pequeña interfaz web usando Flask y se
 
 ---
 
-## 1. 📘 Introducción
+# 1. 📘 Introducción
 
 Durante el módulo de FCT en la empresa Geotexan se detectó que los equipos del laboratorio no contaban con un sistema de copias de seguridad. Esto suponía un riesgo elevado de pérdida de datos y tiempos largos de recuperación ante fallos.
 
@@ -32,7 +32,7 @@ Este proyecto desarrolla una solución completa de respaldo automatizado basada 
 
 ---
 
-## 2. 🎯 Objetivos
+# 2. 🎯 Objetivos
 
 **Objetivo general**  
 Implantar un sistema automatizado de copias de seguridad en red con herramientas libres y monitorización vía web.
@@ -48,7 +48,7 @@ Implantar un sistema automatizado de copias de seguridad en red con herramientas
 
 ---
 
-## 3. 🧩 Análisis del entorno
+# 3. 🧩 Análisis del entorno
 
 - Equipos con Windows sin backup.
 - Red local básica sin VLAN ni DHCP avanzado.
@@ -58,7 +58,7 @@ Se utilizó una máquina virtual en Proxmox para montar el servidor Debian centr
 
 ---
 
-## 4. 🛠️ Tecnologías utilizadas
+# 4. 🛠️ Tecnologías utilizadas
 
 | Tecnología        | Función                                               |
 |-------------------|--------------------------------------------------------|
@@ -72,7 +72,7 @@ Se utilizó una máquina virtual en Proxmox para montar el servidor Debian centr
 
 ---
 
-## 5. 🧱 Diseño del sistema
+# 5. 🧱 Diseño del sistema
 
 ```plaintext
 [Equipo cliente] <-- Clonezilla Live --> [Servidor Debian]
@@ -92,7 +92,7 @@ Se utilizó una máquina virtual en Proxmox para montar el servidor Debian centr
 
 ---
 
-## 6. ⚙️ Implementación
+# 6. ⚙️ Implementación
 
 - 🔧 Debian: SSH, usuario `backupuser`, permisos, carpetas.
 - 💻 Clonezilla: USB, conexión por SSH y backup manual.
@@ -103,7 +103,7 @@ Se utilizó una máquina virtual en Proxmox para montar el servidor Debian centr
 
 ---
 
-## 7. ✅ Pruebas realizadas
+# 7. ✅ Pruebas realizadas
 
 - Backup manual desde Clonezilla.
 - Script automático testado con múltiples equipos.
@@ -113,7 +113,7 @@ Se utilizó una máquina virtual en Proxmox para montar el servidor Debian centr
 
 ---
 
-## 8. 🌐 Visualización web con Flask
+# 8. 🌐 Visualización web con Flask
 
 Aplicación en Python + Flask que analiza `/backup-imagenes` y muestra:
 
@@ -125,7 +125,7 @@ Diseñada para usarse desde navegador, accesible para técnicos sin necesidad de
 
 ---
 
-## 9. 📊 Resultados y mejoras
+# 9. 📊 Resultados y mejoras
 
 **Resultados**  
 - Sistema probado y funcional.
@@ -141,13 +141,13 @@ Diseñada para usarse desde navegador, accesible para técnicos sin necesidad de
 
 ---
 
-## 10. 🧠 Conclusiones
+# 10. 🧠 Conclusiones
 
 Este proyecto ha resuelto una necesidad real con herramientas libres, aplicando conocimientos de ASIR en un entorno real. Se ha creado una solución escalable, reutilizable y segura que mejora la infraestructura TI de la empresa.
 
 ---
 
-## 11. 📎 Anexos
+# 11. 📎 Anexos
 
 | Archivo                       | Descripción                                        |
 |------------------------------|----------------------------------------------------|
