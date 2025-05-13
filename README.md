@@ -1,9 +1,10 @@
-
 # Proyecto TFG – Sistema de copias de seguridad con Clonezilla y servidor Debian
 
 ## 📌 Resumen
 
-Este proyecto consiste en la implementación de un sistema de copias de seguridad para los equipos del laboratorio de la empresa, utilizando Clonezilla Live y un servidor Debian con SSH. Las imágenes de respaldo se almacenan en el servidor de forma segura, permitiendo su restauración rápida en caso de fallo o mantenimiento.
+Este proyecto consiste en la implantación de un sistema de copias de seguridad para los equipos del laboratorio de la empresa Geotexan, utilizando Clonezilla Live y un servidor Debian 12 con SSH. Las copias generadas se almacenan en dicho servidor de forma centralizada y segura, permitiendo su restauración en caso de error crítico, mantenimiento o avería.
+
+Como complemento, se ha desarrollado una pequeña interfaz web usando Flask y servida a través de NGINX, que permite visualizar de forma rápida el estado de los respaldos desde cualquier dispositivo dentro de la red local.
 
 ---
 
@@ -16,71 +17,63 @@ Este proyecto consiste en la implementación de un sistema de copias de segurida
 5. [Diseño del sistema](#5-diseño-del-sistema)  
 6. [Implementación](#6-implementación)  
 7. [Pruebas realizadas](#7-pruebas-realizadas)  
-8. [Resultados y mejoras](#8-resultados-y-mejoras)  
-9. [Conclusiones](#9-conclusiones)  
-10. [Recursos](#10-recursos)  
-11. [Cronograma y presupuesto](#11-cronograma-y-presupuesto)  
-12. [Bibliografía](#12-bibliografía)  
-13. [Anexos](#13-anexos)
+8. [Visualización web con Flask](#8-visualización-web-con-flask)  
+9. [Resultados y mejoras](#9-resultados-y-mejoras)  
+10. [Conclusiones](#10-conclusiones)  
+11. [Anexos](#11-anexos)
 
 ---
 
 ## 1. Introducción
 
-En el laboratorio de la empresa Geotexan se utilizan varios equipos informáticos que forman parte esencial del flujo de trabajo diario. Sin embargo, actualmente no existe un sistema de copias de seguridad implementado para estos equipos. Esto supone un riesgo significativo, ya que en caso de fallo del sistema, pérdida de datos o daños en el disco duro, no hay forma de restaurar el equipo a un estado funcional anterior.
+En el laboratorio de la empresa se utilizan varios equipos informáticos esenciales para el trabajo diario. Sin embargo, hasta ahora no se contaba con un sistema de copias de seguridad implementado, lo que suponía un riesgo importante en caso de fallo del sistema o pérdida de datos.
 
-Ante esta problemática, se plantea como proyecto de TFG el diseño e implementación de un sistema de copias de seguridad que permita realizar imágenes completas de los equipos del laboratorio. Para ello, se utilizará Clonezilla Live como herramienta de clonado y un servidor Debian configurado con SSH como destino centralizado para almacenar dichas copias.
+Con el objetivo de solventar este problema, se ha diseñado e implementado un sistema de respaldo basado en software libre que garantiza que todos los equipos tengan una copia de seguridad actualizada accesible en caso de necesidad.
 
 ---
 
 ## 2. Objetivos
 
-### Objetivo general
-
-Diseñar e implementar un sistema de copias de seguridad basado en Clonezilla y un servidor Debian 12 accesible mediante SSH, que permita preservar imágenes de los equipos del laboratorio de forma centralizada, segura y eficiente.
-
-### Objetivos específicos
-
-- Instalar y configurar un servidor Debian 12 como nodo de almacenamiento de copias.
-- Configurar el acceso remoto seguro mediante SSH.
-- Crear un entorno de almacenamiento estructurado para las imágenes.
-- Utilizar Clonezilla Live para realizar copias completas de discos.
-- Automatizar y documentar el proceso para futuras réplicas o restauraciones.
+- Implementar un sistema de copias de seguridad fiable, reutilizable y mantenible.
+- Automatizar el proceso de backup usando Clonezilla Live.
+- Centralizar las copias en un servidor Debian accesible por red mediante SSH.
+- Crear una interfaz web con Flask para visualizar el estado de los backups.
+- Documentar el proceso completo de manera clara y técnica.
 
 ---
 
 ## 3. Análisis del entorno
 
-- Equipos del laboratorio: sistemas Windows, uso diario intensivo.
-- Red LAN de 1 Gbps.
-- Servidor virtual en Proxmox con Debian 12.
-- Sin soluciones previas automatizadas de backup.
+- **Equipos cliente**: sistemas Windows, uso frecuente y crítico.
+- **Red local**: conectividad 1 Gbps, sin VLAN configuradas.
+- **Servidor**: máquina virtual sobre Proxmox con Debian 12.
+- **Requisitos**: realizar imágenes completas de los discos de los equipos del laboratorio y almacenarlas de forma centralizada.
 
 ---
 
 ## 4. Tecnologías utilizadas
 
-- Clonezilla Live
-- Debian 12
-- SSH
-- Scripts Bash
+- **Clonezilla Live** – para clonar discos completos.
+- **Debian 12** – como servidor de almacenamiento de backups.
+- **SSH/SFTP** – protocolo seguro para la transferencia de datos.
+- **Python 3 + Flask** – para crear la interfaz web.
+- **NGINX** – para servir la aplicación web en entorno de producción.
+- **Bash** – para automatización de procesos básicos.
 
 ---
 
 ## 5. Diseño del sistema
 
-### Esquema general
-
-```
-[Equipo laboratorio] <-- Clonezilla (USB o PXE) --> [Servidor Debian (SSH)]
+```plaintext
+[Equipo cliente] <-- Clonezilla (USB) --> [Servidor Debian con SSH + Flask + NGINX]
 ```
 
-### Estructura de carpetas
+La estructura de almacenamiento de backups es sencilla pero eficaz:
 
-```
+```plaintext
 /backup-imagenes/
-├── equipo01/
-├── equipo02/
+├── equipo1/
+├── equipo2/
 └── ...
 ```
 
@@ -88,111 +81,84 @@ Diseñar e implementar un sistema de copias de seguridad basado en Clonezilla y 
 
 ## 6. Implementación
 
-Los pasos de instalación y configuración están documentados en:
+### Parte 1: Configuración del servidor Debian
 
-- `Configuración-Debian.md`
-- `Configuración-Clonezilla.md`
+- Instalación limpia de Debian 12.
+- Creación del usuario `backupuser` con permisos limitados.
+- Instalación y configuración del servicio SSH.
+- Creación de la carpeta `/backup-imagenes` con permisos adecuados.
 
-Resumen:
-- Instalación de Debian
-- Creación de usuario `backupuser`
-- Configuración de SSH
-- Arranque con Clonezilla
-- Conexión SSH y almacenamiento remoto
+### Parte 2: Uso de Clonezilla Live
+
+- Arranque por USB de los equipos cliente.
+- Conexión mediante SSH al servidor.
+- Selección del disco origen y destino.
+- Generación de imagen y verificación.
 
 ---
 
 ## 7. Pruebas realizadas
 
-### Prueba 1: Copia completa de equipo Windows
-
-- Clonezilla Live por USB
-- Conexión SSH al servidor Debian
-- Almacenamiento en `/backup-imagenes/equipo01/`
-
-✅ Resultado: Éxito
-
-### Prueba 2: Restauración en otro equipo
-
-- Restauración en equipo limpio
-- Imagen funcional recuperada sin errores
-
-✅ Resultado: Éxito
+- Se ha probado la copia y restauración completa de un equipo.
+- Verificada la integridad de las imágenes mediante acceso manual al directorio de backup.
+- Restauración funcional del sistema operativo en el mismo y otro equipo compatible.
 
 ---
 
-## 8. Resultados y mejoras
+## 8. Visualización web con Flask
+
+Como funcionalidad adicional, se ha desarrollado una pequeña aplicación web en Python utilizando el framework Flask. Esta aplicación recorre el directorio `/backup-imagenes` y muestra, de forma clara y accesible desde el navegador, el estado de cada equipo: nombre, fecha del último backup y número total de archivos almacenados.
+
+El sistema corre sobre NGINX configurado como proxy inverso, lo que permite ofrecer la aplicación en producción desde el puerto 80. Se trata de una mejora clave para el seguimiento visual del sistema de backups, facilitando su supervisión por parte del personal técnico o de mantenimiento.
+
+---
+
+
+---
+
+## 📋 Planificación de tareas
+
+A continuación se detallan las tareas realizadas durante el desarrollo del proyecto, junto con una estimación de tiempo invertido:
+
+| Tarea                                    | Descripción técnica                                               |
+|------------------------------------------|-------------------------------------------------------------------|
+| Instalación de Debian                    | Instalación y configuración básica de red y acceso SSH            |
+| Configuración de usuario y permisos      | Creación del usuario `backupuser` y estructura de carpetas        |
+| Configuración de Clonezilla              | Preparación de USB, arranque y pruebas de copia de equipos        |
+| Transferencia por SSH                    | Validación de acceso remoto seguro y pruebas de transferencia     |
+| Verificación de copias                   | Comprobación de integridad de las imágenes                        |
+| Desarrollo interfaz Flask                | Script Python que analiza directorios y genera la tabla HTML      |
+| Configuración NGINX                      | Proxy inverso hacia Flask, apertura de puertos, pruebas           |
+| Redacción documentación y memoria        | Escritura en Markdown, organización de contenidos y limpieza      |
+| Capturas, anexos, pruebas finales        | Toma de imágenes, organización del proyecto, pruebas de entrega   |
+
+
+## 9. Resultados y mejoras
 
 ### Resultados
 
-- Sistema funcional y probado
-- Interfaz simple con Clonezilla
-- Rápida restauración en caso de error
+- Sistema funcional desplegado y probado en entorno real.
+- Documentación clara del proceso técnico.
+- Visualización web que aporta valor añadido.
 
-### Mejoras a futuro
+### Mejoras futuras
 
-- Automatización total con scripts PXE
-- Interfaz web para verificación y control
-- Cifrado de backups
-
----
-
-## 9. Conclusiones
-
-Este proyecto ha permitido implementar un sistema de respaldo para los equipos de la empresa Geotexan, utilizando únicamente herramientas libres y recursos ya disponibles. Gracias a la automatización con Clonezilla y la centralización mediante SSH en un servidor Debian, se consigue reducir considerablemente el tiempo necesario para recuperar un equipo en caso de fallo.
+- Integración de sistema de alertas por correo o Telegram si no se detecta backup en X días.
+- Interfaz de restauración desde la web (requiere control de privilegios).
+- Automatización mediante PXE para arrancar Clonezilla por red.
 
 ---
 
-## 10. Recursos
+## 10. Conclusiones
 
-### Recursos humanos
-
-- **Alumno**: Abel Sánchez  
-- **Rol**: Responsable de toda la implementación
-
-### Recursos materiales
-
-- Servidor físico virtualizado
-- VM con Debian 12
-- USB con Clonezilla
-- Red local
+Este proyecto ha permitido resolver una necesidad real del entorno de prácticas: dotar a los equipos de laboratorio de un sistema de respaldo automatizado, centralizado y de rápida restauración. A través del uso de herramientas libres, se ha conseguido implementar una solución robusta, documentada y con capacidad de ampliación futura.
 
 ---
 
-## 11. Cronograma y presupuesto
-
-### Cronograma
-
-| Semana | Actividad                                |
-|--------|------------------------------------------|
-| 1      | Instalación Debian y configuración SSH   |
-| 2      | Carpeta backup y pruebas de red          |
-| 3      | Clonezilla, clonado y restauración       |
-| 4      | Documentación y anexos                   |
-
-### Presupuesto
-
-| Recurso                 | Descripción                      | Coste |
-|-------------------------|----------------------------------|-------|
-| VM Debian 12            | Reutilización                    | 0 €   |
-| Clonezilla Live         | Software libre                   | 0 €   |
-| USB booteable           | Existente                        | 0 €   |
-| Tiempo del alumno       | Trabajo personal                 | 0 €   |
-| **Total**               |                                  | **0 €** |
-
----
-
-## 12. Bibliografía
-
-- https://clonezilla.org/
-- https://www.debian.org/
-- https://man.openbsd.org/ssh
-- https://clonezilla.org/clonezilla-live-doc.php
-
----
-
-## 13. Anexos
+## 11. Anexos
 
 - Configuración-Debian.md
 - Configuración-Clonezilla.md
-- Capturas de pantalla (si aplica)
+- Visualización_Backups_Flask.md
+- Capturas de pantalla
+- Script app.py
