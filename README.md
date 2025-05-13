@@ -26,141 +26,125 @@ Como complemento, se ha desarrollado una pequeña interfaz web usando Flask y se
 
 ## 1. Introducción
 
-En el laboratorio de la empresa se utilizan varios equipos informáticos esenciales para el trabajo diario. Sin embargo, hasta ahora no se contaba con un sistema de copias de seguridad implementado, lo que suponía un riesgo importante en caso de fallo del sistema o pérdida de datos.
+En el entorno empresarial actual, garantizar la continuidad del servicio ante posibles fallos de los sistemas es una necesidad crítica. Durante mi periodo de FCT en la empresa **Geotexan**, detecté que los equipos del laboratorio no contaban con un sistema de copias de seguridad. Esta carencia suponía un riesgo elevado de pérdida de datos y de tiempos prolongados de recuperación.
 
-Con el objetivo de solventar este problema, se ha diseñado e implementado un sistema de respaldo basado en software libre que garantiza que todos los equipos tengan una copia de seguridad actualizada accesible en caso de necesidad.
-
----
+Este proyecto tiene como finalidad diseñar e implantar una solución de respaldo automatizada y centralizada, utilizando herramientas de software libre, que permita realizar y supervisar copias de seguridad de forma eficiente, segura y reutilizable.
 
 ## 2. Objetivos
 
-- Implementar un sistema de copias de seguridad fiable, reutilizable y mantenible.
-- Automatizar el proceso de backup usando Clonezilla Live.
-- Centralizar las copias en un servidor Debian accesible por red mediante SSH.
-- Crear una interfaz web con Flask para visualizar el estado de los backups.
-- Documentar el proceso completo de manera clara y técnica.
+### Objetivo general
 
----
+Desarrollar un sistema automatizado de copias de seguridad basado en Clonezilla, que almacene las imágenes en un servidor Debian accesible por SSH, permitiendo su monitorización mediante una interfaz web y generando alertas por correo.
+
+### Objetivos específicos
+
+- Instalar y configurar un servidor Debian como repositorio central de imágenes.
+- Realizar copias de seguridad manuales con Clonezilla desde equipos cliente.
+- Automatizar el proceso de respaldo con un script que detecte el equipo y nombre la imagen.
+- Desarrollar una aplicación web con Flask que muestre el estado de los respaldos.
+- Servir la interfaz mediante NGINX y garantizar el acceso desde la red local.
+- Integrar un sistema de notificaciones por correo ante éxito o fallo del backup.
+- Documentar todo el sistema de forma clara y modular.
 
 ## 3. Análisis del entorno
 
-- **Equipos cliente**: sistemas Windows, uso frecuente y crítico.
-- **Red local**: conectividad 1 Gbps, sin VLAN configuradas.
-- **Servidor**: máquina virtual sobre Proxmox con Debian 12.
-- **Requisitos**: realizar imágenes completas de los discos de los equipos del laboratorio y almacenarlas de forma centralizada.
+La infraestructura analizada en Geotexan se compone de varios equipos de laboratorio con sistema operativo Windows, conectados a una red local sin soluciones de respaldo. No existía una política de copias ni un servidor destinado a almacenarlas. La pérdida de cualquier equipo requería reinstalación manual desde cero, lo cual generaba pérdidas de tiempo y riesgo de interrupción en la producción.
 
----
+Para este proyecto se aprovechó una máquina virtual en un servidor con Proxmox, instalando Debian 12 como sistema operativo base para centralizar los respaldos.
 
 ## 4. Tecnologías utilizadas
 
-- **Clonezilla Live** – para clonar discos completos.
-- **Debian 12** – como servidor de almacenamiento de backups.
-- **SSH/SFTP** – protocolo seguro para la transferencia de datos.
-- **Python 3 + Flask** – para crear la interfaz web.
-- **NGINX** – para servir la aplicación web en entorno de producción.
-- **Bash** – para automatización de procesos básicos.
-
----
+| Tecnología         | Función                                                  |
+|--------------------|----------------------------------------------------------|
+| **Debian 12**       | Sistema operativo del servidor central                  |
+| **Clonezilla Live** | Clonado de discos desde el equipo cliente               |
+| **SSH / SFTP**      | Transferencia segura de imágenes al servidor            |
+| **Flask (Python)**  | Generación de interfaz web para monitorización          |
+| **NGINX**           | Servidor web para producción                            |
+| **Bash**            | Automatización del proceso de copia                     |
+| **msmtp + mailutils** | Envío de notificaciones por correo                    |
 
 ## 5. Diseño del sistema
 
+### Arquitectura general
+
 ```plaintext
-[Equipo cliente] <-- Clonezilla (USB) --> [Servidor Debian con SSH + Flask + NGINX]
+[Equipo cliente] <-- Clonezilla Live --> [Servidor Debian]
+                                         ├── SSH (recepción de imágenes)
+                                         ├── /backup-imagenes/<nombre_equipo>/
+                                         ├── Flask (visualización web)
+                                         └── NGINX (servidor accesible en red)
 ```
 
-La estructura de almacenamiento de backups es sencilla pero eficaz:
+### Organización de directorios en el servidor
 
 ```plaintext
 /backup-imagenes/
-├── equipo1/
-├── equipo2/
+├── EQUIPO01/
+│   └── EQUIPO01_2024-05-01_14-30/
+├── EQUIPO02/
+│   └── EQUIPO02_2024-05-03_10-00/
 └── ...
 ```
 
----
-
 ## 6. Implementación
 
-### Parte 1: Configuración del servidor Debian
-
-- Instalación limpia de Debian 12.
-- Creación del usuario `backupuser` con permisos limitados.
-- Instalación y configuración del servicio SSH.
-- Creación de la carpeta `/backup-imagenes` con permisos adecuados.
-
-### Parte 2: Uso de Clonezilla Live
-
-- Arranque por USB de los equipos cliente.
-- Conexión mediante SSH al servidor.
-- Selección del disco origen y destino.
-- Generación de imagen y verificación.
-
----
+- **Servidor Debian**: instalación limpia, activación de SSH, creación de usuario `backupuser` y directorio `/backup-imagenes`.
+- **Clonezilla Live**: arranque desde USB en cada equipo, selección de disco `sda`, conexión por SSH al servidor.
+- **Automatización**: script `mybackup.sh` que detecta el nombre del host, crea un directorio en el servidor y realiza el backup sin intervención.
+- **Flask**: aplicación web que analiza el contenido de `/backup-imagenes` y muestra tabla con nombre del equipo, fecha del último backup y número de archivos.
+- **NGINX**: configurado como proxy inverso para servir Flask desde el puerto 80.
+- **Notificaciones por correo**: uso de `msmtp` y `mailutils` para avisar por email si la copia ha sido correcta o ha fallado.
 
 ## 7. Pruebas realizadas
 
-- Se ha probado la copia y restauración completa de un equipo.
-- Verificada la integridad de las imágenes mediante acceso manual al directorio de backup.
-- Restauración funcional del sistema operativo en el mismo y otro equipo compatible.
-
----
+- **Backup manual desde Clonezilla**: pruebas en varios equipos, comprobación de transferencia y estructura de carpetas.
+- **Script automático**: prueba con diferentes hosts, verificación de que el nombre y fecha se generan correctamente.
+- **Restauración**: recuperación de un equipo a partir de una imagen almacenada.
+- **Flask**: pruebas con diferentes navegadores desde red local.
+- **Correo**: recepción de alertas en Gmail tras completar copia y en caso de error simulado.
 
 ## 8. Visualización web con Flask
 
-Como funcionalidad adicional, se ha desarrollado una pequeña aplicación web en Python utilizando el framework Flask. Esta aplicación recorre el directorio `/backup-imagenes` y muestra, de forma clara y accesible desde el navegador, el estado de cada equipo: nombre, fecha del último backup y número total de archivos almacenados.
+Se ha desarrollado una interfaz web ligera con Flask que muestra el estado de los backups. Permite consultar desde cualquier dispositivo de la red:
 
-El sistema corre sobre NGINX configurado como proxy inverso, lo que permite ofrecer la aplicación en producción desde el puerto 80. Se trata de una mejora clave para el seguimiento visual del sistema de backups, facilitando su supervisión por parte del personal técnico o de mantenimiento.
+- El nombre del equipo.
+- La fecha del último respaldo.
+- La cantidad de archivos generados.
 
----
-
-## 9. 📋 Planificación de tareas
-
-A continuación se detallan las tareas realizadas durante el desarrollo del proyecto, junto con una estimación de tiempo invertido:
-
-| Tarea                                    | Descripción técnica                                               |
-|------------------------------------------|-------------------------------------------------------------------|
-| Instalación de Debian                    | Instalación y configuración básica de red y acceso SSH            |
-| Configuración de usuario y permisos      | Creación del usuario `backupuser` y estructura de carpetas        |
-| Configuración de Clonezilla              | Preparación de USB, arranque y pruebas de copia de equipos        |
-| Transferencia por SSH                    | Validación de acceso remoto seguro y pruebas de transferencia     |
-| Verificación de copias                   | Comprobación de integridad de las imágenes                        |
-| Desarrollo interfaz Flask                | Script Python que analiza directorios y genera la tabla HTML      |
-| Configuración NGINX                      | Proxy inverso hacia Flask, apertura de puertos, pruebas           |
-| Redacción documentación y memoria        | Escritura en Markdown, organización de contenidos y limpieza      |
-| Capturas, anexos, pruebas finales        | Toma de imágenes, organización del proyecto, pruebas de entrega   |
-
+Esta interfaz se sirve con NGINX para facilitar el acceso desde navegador, y resulta ideal para el personal técnico que quiera monitorizar el sistema sin necesidad de entrar por terminal al servidor.
 
 ## 9. Resultados y mejoras
 
-### Resultados
+### Resultados alcanzados
 
-- Sistema funcional desplegado y probado en entorno real.
-- Documentación clara del proceso técnico.
-- Visualización web que aporta valor añadido.
+- Sistema de backup funcional, probado y replicable.
+- Monitorización accesible y clara.
+- Automatización total del proceso de copias.
+- Sistema de alertas por correo implementado con éxito.
+- Documentación detallada por módulos.
 
 ### Mejoras futuras
 
-- Integración de sistema de alertas por correo o Telegram si no se detecta backup en X días.
-- Interfaz de restauración desde la web (requiere control de privilegios).
-- Automatización mediante PXE para arrancar Clonezilla por red.
-
----
+- Añadir login básico o autenticación a la interfaz web.
+- Incorporar PXE para arranque automático de Clonezilla.
+- Cifrado de las imágenes almacenadas.
+- Histórico y estadísticas de backups.
 
 ## 10. Conclusiones
 
-Este proyecto ha permitido resolver una necesidad real del entorno de prácticas: dotar a los equipos de laboratorio de un sistema de respaldo automatizado, centralizado y de rápida restauración. A través del uso de herramientas libres, se ha conseguido implementar una solución robusta, documentada y con capacidad de ampliación futura.
-
----
+El proyecto ha permitido implantar una solución real a un problema cotidiano en muchas empresas: la falta de copias de seguridad. Gracias al uso de software libre y conocimientos adquiridos en el ciclo ASIR, se ha creado un sistema robusto, documentado y escalable. Ha supuesto una mejora real en la infraestructura de la empresa y ha servido como caso práctico de administración de sistemas.
 
 ## 11. Anexos
 
-| Documento                        | Descripción                                       |
-|----------------------------------|---------------------------------------------------|
-| `Configuración-Debian.md`        | Configuración inicial del servidor Debian         |
-| `Configuración-Clonezilla.md`    | Procedimiento para hacer backups manuales         |
-| `Configuración-Flask.md`         | Desarrollo de la interfaz de monitorización       |
-| `Script-Clonezilla.md`           | Script de backup automático desde Clonezilla      |
-| `Servicio-Correo-Alertas.md`     | Servicio de notificación de resultados por correo |
+| Archivo                       | Descripción                                        |
+|------------------------------|----------------------------------------------------|
+| `Configuracion-Debian.md`    | Instalación y preparación del servidor             |
+| `Configuracion-Clonezilla.md`| Procedimiento de backup manual con Clonezilla      |
+| `Script-Clonezilla.md`       | Script automático de copia                         |
+| `Configuracion-Flask.md`     | Interfaz web para ver el estado de los equipos     |
+| `Servicio-Correo-Alertas.md` | Configuración de sistema de alertas por correo     |
+| Capturas                     | Imágenes de los procesos y la interfaz             |
 
 ---
 
