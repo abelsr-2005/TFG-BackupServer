@@ -154,8 +154,24 @@ Este proyecto ha permitido resolver una necesidad real del entorno de prácticas
 
 ## 11. Anexos
 
-- Configuración-Debian.md
-- Configuración-Clonezilla.md
-- Visualización_Backups_Flask.md
-- Capturas de pantalla
-- Script app.py
+| Documento                        | Descripción                                       |
+|----------------------------------|---------------------------------------------------|
+| `Configuración-Debian.md`        | Configuración inicial del servidor Debian         |
+| `Configuración-Clonezilla.md`    | Procedimiento para hacer backups manuales         |
+| `Configuración-Flask.md`         | Desarrollo de la interfaz de monitorización       |
+| `Script-Clonezilla.md`           | Script de backup automático desde Clonezilla      |
+| `Servicio-Correo-Alertas.md`     | Servicio de notificación de resultados por correo |
+
+---
+
+<p align="center">
+  Hecho con 💻, café ☕ y mucho esfuerzo por  
+  <strong>Abel Sánchez Rodríguez</strong><br><br>
+  <em>Proyecto de Fin de Ciclo – Administración de Sistemas Informáticos en Red</em><br>
+  <strong>IES La Marisma</strong> – Curso 2024/2025<br><br>
+  📍 Huelva, España
+</p>
+
+<p align="center">
+  <sub>Repositorio mantenido con fines educativos como parte del Módulo de Proyecto Integrado</sub>
+</p>
