@@ -24,13 +24,13 @@ Como complemento, se ha desarrollado una pequeña interfaz web usando Flask y se
 
 ---
 
-## 1. Introducción
+## 1. 📘 Introducción
 
 En el entorno empresarial actual, garantizar la continuidad del servicio ante posibles fallos de los sistemas es una necesidad crítica. Durante mi periodo de FCT en la empresa **Geotexan**, detecté que los equipos del laboratorio no contaban con un sistema de copias de seguridad. Esta carencia suponía un riesgo elevado de pérdida de datos y de tiempos prolongados de recuperación.
 
 Este proyecto tiene como finalidad diseñar e implantar una solución de respaldo automatizada y centralizada, utilizando herramientas de software libre, que permita realizar y supervisar copias de seguridad de forma eficiente, segura y reutilizable.
 
-## 2. Objetivos
+## 2. 🎯 Objetivos
 
 ### Objetivo general
 
@@ -46,13 +46,13 @@ Desarrollar un sistema automatizado de copias de seguridad basado en Clonezilla,
 - Integrar un sistema de notificaciones por correo ante éxito o fallo del backup.
 - Documentar todo el sistema de forma clara y modular.
 
-## 3. Análisis del entorno
+## 3. 🧩 Análisis del entorno
 
 La infraestructura analizada en Geotexan se compone de varios equipos de laboratorio con sistema operativo Windows, conectados a una red local sin soluciones de respaldo. No existía una política de copias ni un servidor destinado a almacenarlas. La pérdida de cualquier equipo requería reinstalación manual desde cero, lo cual generaba pérdidas de tiempo y riesgo de interrupción en la producción.
 
 Para este proyecto se aprovechó una máquina virtual en un servidor con Proxmox, instalando Debian 12 como sistema operativo base para centralizar los respaldos.
 
-## 4. Tecnologías utilizadas
+## 4. 🛠️ Tecnologías utilizadas
 
 | Tecnología         | Función                                                  |
 |--------------------|----------------------------------------------------------|
@@ -64,7 +64,7 @@ Para este proyecto se aprovechó una máquina virtual en un servidor con Proxmox
 | **Bash**            | Automatización del proceso de copia                     |
 | **msmtp + mailutils** | Envío de notificaciones por correo                    |
 
-## 5. Diseño del sistema
+## 5. 🧱 Diseño del sistema
 
 ### Arquitectura general
 
@@ -87,7 +87,7 @@ Para este proyecto se aprovechó una máquina virtual en un servidor con Proxmox
 └── ...
 ```
 
-## 6. Implementación
+## 6. ⚙️ Implementación
 
 - **Servidor Debian**: instalación limpia, activación de SSH, creación de usuario `backupuser` y directorio `/backup-imagenes`.
 - **Clonezilla Live**: arranque desde USB en cada equipo, selección de disco `sda`, conexión por SSH al servidor.
@@ -96,7 +96,7 @@ Para este proyecto se aprovechó una máquina virtual en un servidor con Proxmox
 - **NGINX**: configurado como proxy inverso para servir Flask desde el puerto 80.
 - **Notificaciones por correo**: uso de `msmtp` y `mailutils` para avisar por email si la copia ha sido correcta o ha fallado.
 
-## 7. Pruebas realizadas
+## 7. ✅ Pruebas realizadas
 
 - **Backup manual desde Clonezilla**: pruebas en varios equipos, comprobación de transferencia y estructura de carpetas.
 - **Script automático**: prueba con diferentes hosts, verificación de que el nombre y fecha se generan correctamente.
@@ -104,7 +104,7 @@ Para este proyecto se aprovechó una máquina virtual en un servidor con Proxmox
 - **Flask**: pruebas con diferentes navegadores desde red local.
 - **Correo**: recepción de alertas en Gmail tras completar copia y en caso de error simulado.
 
-## 8. Visualización web con Flask
+## 8. 🌐 Visualización web con Flask
 
 Se ha desarrollado una interfaz web ligera con Flask que muestra el estado de los backups. Permite consultar desde cualquier dispositivo de la red:
 
@@ -114,7 +114,7 @@ Se ha desarrollado una interfaz web ligera con Flask que muestra el estado de lo
 
 Esta interfaz se sirve con NGINX para facilitar el acceso desde navegador, y resulta ideal para el personal técnico que quiera monitorizar el sistema sin necesidad de entrar por terminal al servidor.
 
-## 9. Resultados y mejoras
+## 9. 📊 Resultados y mejoras
 
 ### Resultados alcanzados
 
@@ -131,11 +131,11 @@ Esta interfaz se sirve con NGINX para facilitar el acceso desde navegador, y res
 - Cifrado de las imágenes almacenadas.
 - Histórico y estadísticas de backups.
 
-## 10. Conclusiones
+## 10. 🧠 Conclusiones
 
 El proyecto ha permitido implantar una solución real a un problema cotidiano en muchas empresas: la falta de copias de seguridad. Gracias al uso de software libre y conocimientos adquiridos en el ciclo ASIR, se ha creado un sistema robusto, documentado y escalable. Ha supuesto una mejora real en la infraestructura de la empresa y ha servido como caso práctico de administración de sistemas.
 
-## 11. Anexos
+## 11. 📎 Anexos
 
 | Archivo                       | Descripción                                        |
 |------------------------------|----------------------------------------------------|
@@ -144,8 +144,6 @@ El proyecto ha permitido implantar una solución real a un problema cotidiano en
 | `Script-Clonezilla.md`       | Script automático de copia                         |
 | `Configuracion-Flask.md`     | Interfaz web para ver el estado de los equipos     |
 | `Servicio-Correo-Alertas.md` | Configuración de sistema de alertas por correo     |
-| Capturas                     | Imágenes de los procesos y la interfaz             |
-
 ---
 
 <p align="center">
