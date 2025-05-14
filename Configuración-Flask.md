@@ -62,6 +62,12 @@ Dentro de una carpeta `templates`, crea un archivo `index.html` con contenido co
 
 #### 4. Configurar NGINX
 
+Instala NGINX
+
+``` bash
+sudo apt install nginx
+```
+
 Configura NGINX para redirigir a Flask:
 
 ```nginx
