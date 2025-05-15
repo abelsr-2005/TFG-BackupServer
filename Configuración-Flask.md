@@ -21,7 +21,7 @@ El objetivo de esta interfaz es proporcionar una manera rápida y visual de veri
 ```bash
 sudo apt update
 sudo apt install python3-pip
-pip3 install flask
+pip3 install flask --break-system-packages
 ```
 
 #### 2. Crear el script Flask
