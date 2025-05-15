@@ -1,22 +1,26 @@
-# Visualización web del estado de los backups
+# 🌐 Visualización web del estado de los backups
 
-Como complemento al sistema de copias de seguridad, se ha desarrollado una pequeña aplicación web con Flask que permite visualizar en tiempo real el estado de los backups almacenados en el servidor Debian. Esta aplicación es servida a través del servidor NGINX.
-
-### Objetivo
-
-El objetivo de esta interfaz es proporcionar una manera rápida y visual de verificar qué equipos tienen copias de seguridad actualizadas, cuántos archivos hay por cada uno, y cuándo fue el último backup.
-
-### Tecnologías utilizadas
-
-- Python 3 + Flask
-- Servidor web NGINX
-- Sistema operativo: Debian 12
+Como complemento al sistema de copias de seguridad, se ha desarrollado una sencilla aplicación web con **Flask** que permite visualizar en tiempo real el estado de los backups almacenados en el servidor Debian. Esta aplicación se publica utilizando el servidor **NGINX**.
 
 ---
 
-## Proceso de instalación y configuración
+## 🎯 Objetivo
 
-#### 1. Instalar Flask
+El propósito de esta interfaz es ofrecer una manera **rápida y visual** de comprobar qué equipos tienen copias de seguridad actualizadas, cuántos archivos contiene cada backup, y cuándo fue la última copia realizada.
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+- 🐍 Python 3 + Flask  
+- 🌐 Servidor web: NGINX  
+- 🧱 Sistema operativo: Debian 12
+
+---
+
+## ⚙️ Proceso de instalación y configuración
+
+### 1️⃣ Instalar Flask
 
 ```bash
 sudo apt update
@@ -24,9 +28,11 @@ sudo apt install python3-pip
 pip3 install flask --break-system-packages
 ```
 
-#### 2. Crear el script Flask
+---
 
-Guardar este contenido como `app.py`:
+### 2️⃣ Crear el script principal con Flask
+
+Guarda el siguiente contenido como `app.py`:
 
 ```python
 from flask import Flask, render_template
@@ -56,17 +62,20 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0")
 ```
 
-#### 3. Crear la plantilla HTML
+---
 
-Crea la carpeta `templates` dentro de `flask`, y crea un archivo `index.html` con este contenido.
+### 3️⃣ Crear la plantilla HTML
 
-``` python 
+Crea la carpeta `templates` dentro del directorio del proyecto y dentro de ella, crea un archivo `index.html`.
+
+También puedes usar el siguiente ejemplo mejorado con una ruta para ver archivos por equipo:
+
+```python
 from flask import Flask, render_template, abort
 import os
 from datetime import datetime
 
 app = Flask(__name__)
-
 BACKUP_DIR = "/backup-imagenes"
 
 @app.route("/")
@@ -102,8 +111,9 @@ if __name__ == "__main__":
 
 ---
 
-## 🌐 Configuración de Nginx como Proxy Inverso para Flask
-#### 🐍 1. Crear entorno virtual e instalar dependencias
+## 🚀 Configuración de NGINX como proxy inverso para Flask
+
+### 🐍 1. Crear entorno virtual e instalar dependencias
 
 ```bash
 cd /home/backupuser/flask
@@ -111,25 +121,29 @@ python3 -m venv venv
 ./venv/bin/pip install flask gunicorn
 ```
 
-Opcional: guardar dependencias en un archivo:
+Guardar dependencias en un archivo (opcional):
 
 ```bash
 ./venv/bin/pip freeze > requirements.txt
 ```
 
-#### 🔥 2. Probar Gunicorn manualmente
+---
+
+### 🔥 2. Probar Gunicorn manualmente
 
 ```bash
 cd /home/backupuser/flask
 ./venv/bin/gunicorn --bind 127.0.0.1:8000 app:app
 ```
 
-Abre tu navegador en:  
+Abre el navegador en:  
 [http://localhost:8000](http://localhost:8000)
 
 Presiona `Ctrl+C` para detener.
 
-#### ⚙️ 3. Crear servicio systemd para Gunicorn
+---
+
+### ⚙️ 3. Crear un servicio systemd para Gunicorn
 
 Archivo: `/etc/systemd/system/flaskapp.service`
 
@@ -159,7 +173,9 @@ sudo systemctl start flaskapp
 sudo systemctl status flaskapp
 ```
 
-#### 🌐 4. Configurar Nginx como Proxy Inverso
+---
+
+### 🌐 4. Configurar NGINX como proxy inverso
 
 Archivo: `/etc/nginx/sites-available/flaskapp`
 
@@ -178,33 +194,35 @@ server {
 }
 ```
 
-Activar el sitio y reiniciar Nginx:
+Activar el sitio y reiniciar NGINX:
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/flaskapp /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
+
 ---
 
-### Captura de pantalla
+## 🖼️ Capturas de pantalla
 
-#### Captura de pantalla de Flask en el navegador
+### 💻 Interfaz de Flask antes de NGINX + Gunicorn
 
-Esta captura está hecha antes de instalar NGINX + gunicorn, como se puede ver, usa el puerto `5000`, que es el que usa el servidor python3
+_Se muestra utilizando el puerto 5000 (servidor nativo de Python/Flask)._
 
 ![Captura de pantalla de Flask en navegador](https://github.com/user-attachments/assets/37a941da-35ad-45e5-ba47-5eff0a787db7)
 
-#### Captura de pantalla con NGINX y gunicorn
+---
 
-Aquí se ve como estaría usando NGINX y gunicorn
+### 🚀 Flask desplegado con NGINX + Gunicorn
+
+_Interfaz accediendo por el puerto 80 gracias a la configuración proxy._
 
 ![NGINX y gunicorn](https://github.com/user-attachments/assets/d85922ed-5706-4b11-a3cc-7874b2b000d9)
 
-
 ---
 
-### Mejoras futuras
+## 🔮 Mejoras futuras
 
-- Añadir autenticación básica
-- Sistema de notificaciones por email o Telegram si no hay backups recientes
+- 🔐 Añadir autenticación básica
+- 📬 Integración con notificaciones por email o Telegram si no hay backups recientes
