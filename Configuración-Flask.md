@@ -136,6 +136,16 @@ sudo systemctl restart nginx
         tr:hover {
             background-color: #f1f1f1;
         }
+        .btn {
+            padding: 6px 12px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .icon {
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -147,7 +157,9 @@ sudo systemctl restart nginx
             <tr>
                 <th>Equipo</th>
                 <th>Último backup</th>
-                <th>Total de archivos</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -156,6 +168,20 @@ sudo systemctl restart nginx
                 <td>{{ equipo.nombre }}</td>
                 <td>{{ equipo.ultimo }}</td>
                 <td>{{ equipo.total }}</td>
+                <td class="icon">
+                    {% if equipo.total > 0 %}
+                        ✅
+                    {% else %}
+                        ❌
+                    {% endif %}
+                </td>
+                <td>
+                    {% if equipo.total > 0 %}
+                        <a href="/ver/{{ equipo.nombre }}" class="btn">Ver archivos</a>
+                    {% else %}
+                        <span style="color: gray;">Sin backups</span>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
