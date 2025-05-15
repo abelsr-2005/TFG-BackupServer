@@ -161,18 +161,22 @@ http://localhost
 
 La aplicación Flask ya debe estar disponible públicamente mediante Nginx.
 
-
-
-
-
-
-
-
 ---
 
 ### Captura de pantalla
 
+#### Captura de pantalla de Flask en el navegador
+
+Esta captura está hecha antes de instalar NGINX + gunicorn, como se puede ver, usa el puerto `5000`, que es el que usa el servidor python3
+
 ![Captura de pantalla de Flask en navegador](https://github.com/user-attachments/assets/37a941da-35ad-45e5-ba47-5eff0a787db7)
+
+#### Captura de pantalla con NGINX y gunicorn
+
+Aquí se ve como estaría usando NGINX y gunicorn
+
+![NGINX y gunicorn](https://github.com/user-attachments/assets/d85922ed-5706-4b11-a3cc-7874b2b000d9)
+
 
 ---
 
@@ -180,17 +184,3 @@ La aplicación Flask ya debe estar disponible públicamente mediante Nginx.
 
 - Añadir autenticación básica
 - Sistema de notificaciones por email o Telegram si no hay backups recientes
-
-```
-server {
-    listen 80;
-    server_name localhost;
-
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-
-```
