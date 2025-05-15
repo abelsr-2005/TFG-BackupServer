@@ -140,7 +140,7 @@ fi
 
 ## Comprobación.
 Lanzamos una nueva copia de seguridad y comprobamos que nos llega el correo de verificación.
-![Comprobación_copia_realizada](https://github.com/user-attachments/assets/9f5e1fcc-e318-4703-bfc4-1f6d98c00594)
+![Comprobación_copia_realizada](https://github.com/user-attachments/assets/77bb69fa-04d4-4908-b907-5219c1c2481c)
 
 ---
 
