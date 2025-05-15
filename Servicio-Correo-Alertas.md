@@ -29,12 +29,10 @@ Por tanto, este servicio de alertas se convierte en una herramienta clave para g
 sudo apt update
 sudo apt install postfix mailutils libsasl2-modules
 ```
-
+<br>
 - Conexión a Internet para enviar correos.
 
 ---
-
-## 🛠️ Configuración de Postfix con Gmail
 
 ## 🔐 Generar la contraseña de aplicación de Gmail
 
@@ -51,6 +49,8 @@ Para usar Gmail como servidor SMTP con Postfix, necesitas una **contraseña de a
 
 8. Pulsa en **Crear**. Se mostrará una contraseña de 16 caracteres.
 9. Copia esa contraseña. La usarás en `/etc/postfix/sasl_passwd`.
+
+## 🛠️ Configuración de Postfix con Gmail
 
 ### 1. Editar el archivo de configuración:
 
