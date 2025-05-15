@@ -100,7 +100,7 @@ sudo systemctl restart postfix
 ```bash
 echo "Correo de prueba" | mail -s "Asunto de prueba" tu_correo@gmail.com
 ```
-![Comprobación Correo de prueha](https://github.com/user-attachments/assets/2fafb687-15df-4895-bb50-cc35571c33ae)
+![Comprobación Correo de prueha](https://github.com/user-attachments/assets/72fffae9-7d86-4575-b472-3d2af59aaaac)
 
 ---
 
