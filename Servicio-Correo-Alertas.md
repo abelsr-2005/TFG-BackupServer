@@ -46,7 +46,7 @@ Para usar Gmail como servidor SMTP con Postfix, necesitas una **contraseña de a
 4. Después de activarla, entra a: https://myaccount.google.com/apppasswords
 5. En “Seleccionar aplicación”, elige `Correo`.
 6. En “Seleccionar dispositivo”, escribe un nombre (ej. `Alerta_Backup`).
-<br> <br> <br> 
+<br> <br>
 ![token-correo](https://github.com/user-attachments/assets/563f1296-3251-4818-8429-7542dca39d15)
 
 8. Pulsa en **Generar**. Se mostrará una contraseña de 16 caracteres.
