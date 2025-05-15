@@ -70,43 +70,92 @@ Crea la carpeta `templates` dentro del directorio del proyecto y dentro de ella,
 
 También puedes usar el siguiente ejemplo mejorado con una ruta para ver archivos por equipo:
 
-```python
-from flask import Flask, render_template, abort
-import os
-from datetime import datetime
+```html
+<!DOCTYPE html>
+<html lang="es">
+<meta charset="UTF-8">
+<title>Backup Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #2ecc71;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .btn {
+            padding: 6px 12px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Backups</h1>
 
-app = Flask(__name__)
-BACKUP_DIR = "/backup-imagenes"
-
-@app.route("/")
-def index():
-    equipos = []
-    for nombre_equipo in sorted(os.listdir(BACKUP_DIR)):
-        ruta_equipo = os.path.join(BACKUP_DIR, nombre_equipo)
-        archivos = os.listdir(ruta_equipo)
-        fechas = [os.path.getmtime(os.path.join(ruta_equipo, f)) for f in archivos] if archivos else []
-        ultimo = datetime.fromtimestamp(max(fechas)).strftime("%d-%b-%Y %H:%M") if fechas else "--"
-        equipos.append({
-            "nombre": nombre_equipo,
-            "ultimo": ultimo,
-            "total": len(archivos)
-        })
-    return render_template("index.html", equipos=equipos)
-
-@app.route("/ver/<nombre_equipo>")
-def ver_archivos(nombre_equipo):
-    ruta_equipo = os.path.join(BACKUP_DIR, nombre_equipo)
-    if not os.path.exists(ruta_equipo):
-        abort(404)
-    archivos = os.listdir(ruta_equipo)
-    contenido = f"<h2>Archivos de backup de {nombre_equipo}</h2><ul>"
-    for archivo in archivos:
-        contenido += f"<li>{archivo}</li>"
-    contenido += "</ul><a href='/'>⬅ Volver</a>"
-    return contenido
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    {% if equipos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Equipo</th>
+                <th>Último backup</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipo in equipos %}
+            <tr>
+                <td>{{ equipo.nombre }}</td>
+                <td>{{ equipo.ultimo }}</td>
+                <td>{{ equipo.total }}</td>
+                <td class="icon">
+                    {% if equipo.total > 0 %}
+                        ✅
+                    {% else %}
+                        ❌
+                    {% endif %}
+                </td>
+                <td>
+                    {% if equipo.total > 0 %}
+                        <a href="/ver/{{ equipo.nombre }}" class="btn">Ver archivos</a>
+                    {% else %}
+                        <span style="color: gray;">Sin backups</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No se han encontrado equipos con backups.</p>
+    {% endif %}
+</body>
+</html>
 ```
 
 ---
