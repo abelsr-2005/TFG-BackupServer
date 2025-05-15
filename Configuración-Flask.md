@@ -104,8 +104,29 @@ sudo systemctl restart nginx
 
 
 
-``` bash
-from flask import send_from_directory, abort
+``` python
+from flask import Flask, render_template, abort
+import os
+from datetime import datetime
+
+app = Flask(__name__)
+
+BACKUP_DIR = "/backup-imagenes"
+
+@app.route("/")
+def index():
+    equipos = []
+    for nombre_equipo in sorted(os.listdir(BACKUP_DIR)):
+        ruta_equipo = os.path.join(BACKUP_DIR, nombre_equipo)
+        archivos = os.listdir(ruta_equipo)
+        fechas = [os.path.getmtime(os.path.join(ruta_equipo, f)) for f in archivos] if archivos else []
+        ultimo = datetime.fromtimestamp(max(fechas)).strftime("%d-%b-%Y %H:%M") if fechas else "--"
+        equipos.append({
+            "nombre": nombre_equipo,
+            "ultimo": ultimo,
+            "total": len(archivos)
+        })
+    return render_template("index.html", equipos=equipos)
 
 @app.route("/ver/<nombre_equipo>")
 def ver_archivos(nombre_equipo):
@@ -113,8 +134,13 @@ def ver_archivos(nombre_equipo):
     if not os.path.exists(ruta_equipo):
         abort(404)
     archivos = os.listdir(ruta_equipo)
-    return "<h2>Archivos de backup de {}</h2><ul>{}</ul>".format(
-        nombre_equipo,
-        "".join(f"<li>{archivo}</li>" for archivo in archivos)
-    )
+    contenido = f"<h2>Archivos de backup de {nombre_equipo}</h2><ul>"
+    for archivo in archivos:
+        contenido += f"<li>{archivo}</li>"
+    contenido += "</ul><a href='/'>⬅ Volver</a>"
+    return contenido
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", debug=True)
+
 ```
