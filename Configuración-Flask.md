@@ -1,4 +1,4 @@
-## Visualización web del estado de los backups
+# Visualización web del estado de los backups
 
 Como complemento al sistema de copias de seguridad, se ha desarrollado una pequeña aplicación web con Flask que permite visualizar en tiempo real el estado de los backups almacenados en el servidor Debian. Esta aplicación es servida a través del servidor NGINX.
 
@@ -14,7 +14,7 @@ El objetivo de esta interfaz es proporcionar una manera rápida y visual de veri
 
 ---
 
-### Proceso de instalación y configuración
+## Proceso de instalación y configuración
 
 #### 1. Instalar Flask
 
@@ -117,7 +117,7 @@ Opcional: guardar dependencias en un archivo:
 ./venv/bin/pip freeze > requirements.txt
 ```
 
-### 🔥 2. Probar Gunicorn manualmente
+#### 🔥 2. Probar Gunicorn manualmente
 
 ```bash
 cd /home/backupuser/flask
@@ -129,7 +129,7 @@ Abre tu navegador en:
 
 Presiona `Ctrl+C` para detener.
 
-### ⚙️ 3. Crear servicio systemd para Gunicorn
+#### ⚙️ 3. Crear servicio systemd para Gunicorn
 
 Archivo: `/etc/systemd/system/flaskapp.service`
 
@@ -159,7 +159,7 @@ sudo systemctl start flaskapp
 sudo systemctl status flaskapp
 ```
 
-### 🌐 4. Configurar Nginx como Proxy Inverso
+#### 🌐 4. Configurar Nginx como Proxy Inverso
 
 Archivo: `/etc/nginx/sites-available/flaskapp`
 
