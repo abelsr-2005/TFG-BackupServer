@@ -6,27 +6,28 @@ EQUIPO="EQUIPO01"
 DESTINO_SSH="backupuser@192.168.197.168"
 RUTA_REMOTA="/backup-imagenes/$EQUIPO"
 IMAGEN="backup-$FECHA"
+DEST_LOCAL="/mnt/backups"
 
 # 1. Asegurar directorio local
-mkdir -p /home/partimag
+mkdir -p "$DEST_LOCAL"
 
-# 2. Ejecutar Clonezilla
-ocs-sr -q2 -j2 -z1p -i 2000 -scr -p true savedisk "$IMAGEN" sda
+# 2. Ejecutar Clonezilla guardando en /mnt/backups
+ocs-sr -q2 -j2 -z1p -i 2000 -scr -p true -g auto -e1 auto -e2 -r -sfs "ocsroot=$DEST_LOCAL" savedisk "$IMAGEN" sda
 
 # Verifica que se creó correctamente
-if [ ! -d "/home/partimag/$IMAGEN" ]; then
-  echo "❌ Error: La imagen no se creó en /home/partimag/$IMAGEN"
+if [ ! -d "$DEST_LOCAL/$IMAGEN" ]; then
+  echo "❌ Error: La imagen no se creó en $DEST_LOCAL/$IMAGEN"
   exit 1
 fi
 
 # 3. Enviar por SSH
-scp -r "/home/partimag/$IMAGEN" "$DESTINO_SSH:$RUTA_REMOTA/"
+scp -r "$DEST_LOCAL/$IMAGEN" "$DESTINO_SSH:$RUTA_REMOTA/"
 
 # 4. Verificar si scp fue exitoso
 if [ $? -eq 0 ]; then
   echo "✅ Copia enviada correctamente a $RUTA_REMOTA"
   # Opcional: borrar la copia local
-  # rm -rf "/home/partimag/$IMAGEN"
+  # rm -rf "$DEST_LOCAL/$IMAGEN"
 else
   echo "❌ Error al enviar la copia por SSH"
   exit 2
