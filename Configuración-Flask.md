@@ -117,8 +117,6 @@ Opcional: guardar dependencias en un archivo:
 ./venv/bin/pip freeze > requirements.txt
 ```
 
----
-
 ### 🔥 2. Probar Gunicorn manualmente
 
 ```bash
@@ -130,8 +128,6 @@ Abre tu navegador en:
 [http://localhost:8000](http://localhost:8000)
 
 Presiona `Ctrl+C` para detener.
-
----
 
 ### ⚙️ 3. Crear servicio systemd para Gunicorn
 
@@ -162,8 +158,6 @@ sudo systemctl enable flaskapp
 sudo systemctl start flaskapp
 sudo systemctl status flaskapp
 ```
-
----
 
 ### 🌐 4. Configurar Nginx como Proxy Inverso
 
