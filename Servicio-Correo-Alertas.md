@@ -49,7 +49,7 @@ Para usar Gmail como servidor SMTP con Postfix, necesitas una **contraseña de a
 <br> <br>
 ![token-correo](https://github.com/user-attachments/assets/563f1296-3251-4818-8429-7542dca39d15)
 
-8. Pulsa en **Generar**. Se mostrará una contraseña de 16 caracteres.
+8. Pulsa en **Crear**. Se mostrará una contraseña de 16 caracteres.
 9. Copia esa contraseña. La usarás en `/etc/postfix/sasl_passwd`.
 
 ### 1. Editar el archivo de configuración:
