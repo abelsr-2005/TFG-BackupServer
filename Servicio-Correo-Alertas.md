@@ -174,15 +174,6 @@ sudo chmod 600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
 
 ---
 
-## 📬 Sugerencias de Mejora
-
-- Registrar eventos en `/var/log/backup.log`.
-- Integración futura con Telegram, Slack o Discord.
-- Automatización mediante cron o systemd.
-- Verificación de integridad con checksum.
-
----
-
 ## 🧾 Conclusión
 
 Hemos implementado un sistema robusto y funcional de alertas por correo para supervisar copias de seguridad. Esto permite un control proactivo del estado de los backups y facilita la gestión de errores o incidencias.
