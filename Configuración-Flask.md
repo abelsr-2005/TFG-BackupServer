@@ -100,15 +100,18 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
 ```
 
-#### 4. Configurar NGINX
+---
 
-Instala NGINX
+## 🌐 Configuración de Nginx como Proxy Inverso para Flask
+### 📁 1. Crear el archivo de configuración para Nginx
 
-``` bash
-sudo apt install nginx
+Primero, crea un nuevo archivo de configuración para tu aplicación Flask en Nginx:
+
+```bash
+sudo nano /etc/nginx/sites-available/flaskapp
 ```
 
-Configura NGINX para redirigir a Flask:
+Pega el siguiente contenido, ajustando `server_name` si tienes un dominio personalizado:
 
 ```nginx
 server {
@@ -116,18 +119,54 @@ server {
     server_name localhost;
 
     location / {
-        proxy_pass http://127.0.0.1:5000;
+        proxy_pass http://127.0.0.1:8000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 ```
+Este bloque configura Nginx para escuchar en el puerto 80 y reenviar todas las solicitudes al servidor Gunicorn que se ejecuta en `127.0.0.1:8000`.
 
-Reinicia NGINX:
+### 🔗 2. Habilitar la configuración del sitio
+```bash
+sudo ln -s /etc/nginx/sites-available/flaskapp /etc/nginx/sites-enabled/
+```
+### ✅ 3. Verificar la configuración de Nginx
+
+```bash
+sudo nginx -t
+```
+
+Deberías ver:
+
+```
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+
+### 🔄 4. Reiniciar Nginx
 
 ```bash
 sudo systemctl restart nginx
 ```
+### 🧪 Verificación Final
+
+Abre tu navegador y accede a:
+
+```
+http://localhost
+```
+
+La aplicación Flask ya debe estar disponible públicamente mediante Nginx.
+
+
+
+
+
+
+
 
 ---
 
