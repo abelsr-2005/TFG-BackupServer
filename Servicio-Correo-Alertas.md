@@ -23,10 +23,7 @@ Por tanto, este servicio de alertas se convierte en una herramienta clave para g
 
 ## ✅ Requisitos Previos
 
-- Sistema operativo: Debian 10/11 o Kali Linux.
 - Acceso a una cuenta de Gmail con autenticación de dos factores habilitada.
-- Contraseña de aplicación de Gmail generada.
-- Paquetes instalados:
 
 ```bash
 sudo apt update
@@ -38,6 +35,21 @@ sudo apt install postfix mailutils libsasl2-modules
 ---
 
 ## 🛠️ Configuración de Postfix con Gmail
+
+## 🔐 Generar la contraseña de aplicación de Gmail
+
+Para usar Gmail como servidor SMTP con Postfix, necesitas una **contraseña de aplicación** (no tu contraseña habitual). Sigue estos pasos:
+
+1. Accede a tu cuenta de Google: https://myaccount.google.com
+2. Ve a la sección **Seguridad**.
+3. Activa la **verificación en dos pasos**, si no lo has hecho aún.
+4. Después de activarla, entra a: https://myaccount.google.com/apppasswords
+5. En “Seleccionar aplicación”, elige `Correo`.
+6. En “Seleccionar dispositivo”, escribe un nombre (ej. `Alerta_Backup`).
+![token-correo](https://github.com/user-attachments/assets/563f1296-3251-4818-8429-7542dca39d15)
+
+8. Pulsa en **Generar**. Se mostrará una contraseña de 16 caracteres.
+9. Copia esa contraseña. La usarás en `/etc/postfix/sasl_passwd`.
 
 ### 1. Editar el archivo de configuración:
 
