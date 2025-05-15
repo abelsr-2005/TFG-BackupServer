@@ -93,7 +93,7 @@ sudo systemctl restart nginx
 
 ### Captura de pantalla
 
-![Interfaz web de backups](docs/img/interfaz-backup.png)
+![image](https://github.com/user-attachments/assets/37a941da-35ad-45e5-ba47-5eff0a787db7)
 
 ---
 
