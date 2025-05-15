@@ -1,204 +1,97 @@
-# 🌐 Visualización web del estado de los backups
+# 🚀 Despliegue de Aplicación Flask con Gunicorn, Nginx y systemd
 
-Como complemento al sistema de copias de seguridad, se ha desarrollado una sencilla aplicación web con **Flask** que permite visualizar en tiempo real el estado de los backups almacenados en el servidor Debian. Esta aplicación se publica utilizando el servidor **NGINX**.
+## 📁 Estructura del Proyecto
+
+Tu proyecto se encuentra en:
+
+```
+/home/backupuser/flask/
+```
+
+Con la siguiente estructura:
+
+```
+flask/
+├── app.py
+├── venv/
+└── templates/
+    └── index.html
+```
+
+- `app.py`: Archivo principal de tu aplicación Flask.
+- `venv/`: Entorno virtual de Python.
+- `templates/`: Carpeta que contiene las plantillas HTML de tu aplicación.
 
 ---
 
-## 🎯 Objetivo
+## 🛠️ 1. Crear y Activar el Entorno Virtual
 
-El propósito de esta interfaz es ofrecer una manera **rápida y visual** de comprobar qué equipos tienen copias de seguridad actualizadas, cuántos archivos contiene cada backup, y cuándo fue la última copia realizada.
-
----
-
-## 🛠️ Tecnologías utilizadas
-
-- 🐍 Python 3 + Flask  
-- 🌐 Servidor web: NGINX  
-- 🧱 Sistema operativo: Debian 12
-
----
-
-## ⚙️ Proceso de instalación y configuración
-
-### 1️⃣ Instalar Flask
+Desde el directorio de tu proyecto:
 
 ```bash
-sudo apt update
-sudo apt install python3-pip
-pip3 install flask --break-system-packages
+cd /home/backupuser/flask
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Instala Flask y Gunicorn:
+
+```bash
+pip install flask gunicorn
 ```
 
 ---
 
-### 2️⃣ Crear el script principal con Flask
+## 📝 2. Crear la Aplicación Flask
 
-Guarda el siguiente contenido como `app.py`:
+Crea el archivo `app.py` con el siguiente contenido:
 
 ```python
 from flask import Flask, render_template
-import os
-from datetime import datetime
 
 app = Flask(__name__)
 
-BACKUP_DIR = "/backup-imagenes"
-
 @app.route("/")
 def index():
-    equipos = []
-    for nombre_equipo in os.listdir(BACKUP_DIR):
-        ruta_equipo = os.path.join(BACKUP_DIR, nombre_equipo)
-        archivos = os.listdir(ruta_equipo)
-        fechas = [os.path.getmtime(os.path.join(ruta_equipo, f)) for f in archivos] if archivos else []
-        ultimo = datetime.fromtimestamp(max(fechas)).strftime("%d-%b-%Y %H:%M") if fechas else "--"
-        equipos.append({
-            "nombre": nombre_equipo,
-            "ultimo": ultimo,
-            "total": len(archivos)
-        })
-    return render_template("index.html", equipos=equipos)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    return render_template("index.html")
 ```
 
----
+Crea la carpeta de plantillas y un archivo HTML básico:
 
-### 3️⃣ Crear la plantilla HTML
+```bash
+mkdir templates
+nano templates/index.html
+```
 
-Crea la carpeta `templates` dentro del directorio del proyecto y dentro de ella, crea un archivo `index.html`.
-
-También puedes usar el siguiente ejemplo mejorado con una ruta para ver archivos por equipo:
+Contenido de `index.html`:
 
 ```html
 <!DOCTYPE html>
-<html lang="es">
-<meta charset="UTF-8">
-<title>Backup Server</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #2ecc71;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .btn {
-            padding: 6px 12px;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        .icon {
-            font-size: 18px;
-        }
-    </style>
+<html>
+<head>
+    <title>Aplicación Flask</title>
 </head>
 <body>
-    <h1>Backups</h1>
-
-    {% if equipos %}
-    <table>
-        <thead>
-            <tr>
-                <th>Equipo</th>
-                <th>Último backup</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for equipo in equipos %}
-            <tr>
-                <td>{{ equipo.nombre }}</td>
-                <td>{{ equipo.ultimo }}</td>
-                <td>{{ equipo.total }}</td>
-                <td class="icon">
-                    {% if equipo.total > 0 %}
-                        ✅
-                    {% else %}
-                        ❌
-                    {% endif %}
-                </td>
-                <td>
-                    {% if equipo.total > 0 %}
-                        <a href="/ver/{{ equipo.nombre }}" class="btn">Ver archivos</a>
-                    {% else %}
-                        <span style="color: gray;">Sin backups</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No se han encontrado equipos con backups.</p>
-    {% endif %}
+    <h1>¡Hola, mundo!</h1>
 </body>
 </html>
 ```
 
 ---
 
-## 🚀 Configuración de NGINX como proxy inverso para Flask
+## 🔧 3. Crear el Servicio systemd para Gunicorn
 
-### 🐍 1. Crear entorno virtual e instalar dependencias
-
-```bash
-cd /home/backupuser/flask
-python3 -m venv venv
-./venv/bin/pip install flask gunicorn
-```
-
-Guardar dependencias en un archivo (opcional):
+Crea el archivo de servicio:
 
 ```bash
-./venv/bin/pip freeze > requirements.txt
+sudo nano /etc/systemd/system/flaskapp.service
 ```
 
----
-
-### 🔥 2. Probar Gunicorn manualmente
-
-```bash
-cd /home/backupuser/flask
-./venv/bin/gunicorn --bind 127.0.0.1:8000 app:app
-```
-
-Abre el navegador en:  
-[http://localhost:8000](http://localhost:8000)
-
-Presiona `Ctrl+C` para detener.
-
----
-
-### ⚙️ 3. Crear un servicio systemd para Gunicorn
-
-Archivo: `/etc/systemd/system/flaskapp.service`
+Contenido:
 
 ```ini
 [Unit]
-Description=Flask App with Gunicorn
+Description=Gunicorn instance to serve Flask application
 After=network.target
 
 [Service]
@@ -212,21 +105,31 @@ ExecStart=/home/backupuser/flask/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:
 WantedBy=multi-user.target
 ```
 
-Habilitar y arrancar el servicio:
+Recarga systemd y habilita el servicio:
 
 ```bash
-sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
-sudo systemctl enable flaskapp
 sudo systemctl start flaskapp
+sudo systemctl enable flaskapp
+```
+
+Verifica el estado del servicio:
+
+```bash
 sudo systemctl status flaskapp
 ```
 
 ---
 
-### 🌐 4. Configurar NGINX como proxy inverso
+## 🌐 4. Configurar Nginx como Proxy Inverso
 
-Archivo: `/etc/nginx/sites-available/flaskapp`
+Crea un archivo de configuración para Nginx:
+
+```bash
+sudo nano /etc/nginx/sites-available/flaskapp
+```
+
+Contenido:
 
 ```nginx
 server {
@@ -243,35 +146,87 @@ server {
 }
 ```
 
-Activar el sitio y reiniciar NGINX:
+Habilita la configuración y reinicia Nginx:
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/flaskapp /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/flaskapp /etc/nginx/sites-enabled
 sudo nginx -t
 sudo systemctl restart nginx
 ```
 
 ---
 
-## 🖼️ Capturas de pantalla
+## ✅ 5. Verificar el Despliegue
 
-### 💻 Interfaz de Flask antes de NGINX + Gunicorn
+Abre tu navegador y accede a:
 
-_Se muestra utilizando el puerto 5000 (servidor nativo de Python/Flask)._
+```
+http://localhost
+```
 
-![Captura de pantalla de Flask en navegador](https://github.com/user-attachments/assets/37a941da-35ad-45e5-ba47-5eff0a787db7)
-
----
-
-### 🚀 Flask desplegado con NGINX + Gunicorn
-
-_Interfaz accediendo por el puerto 80 gracias a la configuración proxy._
-
-![NGINX y gunicorn](https://github.com/user-attachments/assets/d85922ed-5706-4b11-a3cc-7874b2b000d9)
+Deberías ver la página con el mensaje "¡Hola, mundo!".
 
 ---
 
-## 🔮 Mejoras futuras
+## 🛡️ 6. Recomendaciones de Seguridad
 
-- 🔐 Añadir autenticación básica
-- 📬 Integración con notificaciones por email o Telegram si no hay backups recientes
+- **Firewall**: Asegúrate de que solo los puertos necesarios estén abiertos (por ejemplo, 80 para HTTP).
+- **HTTPS**: Considera configurar HTTPS utilizando Let's Encrypt para cifrar las comunicaciones.
+- **Permisos**: Verifica que los archivos y directorios tengan los permisos adecuados para evitar accesos no autorizados.
+
+---
+
+## 📄 7. Archivos de Configuración
+
+### `app.py`
+
+```python
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+```
+
+### `/etc/systemd/system/flaskapp.service`
+
+```ini
+[Unit]
+Description=Gunicorn instance to serve Flask application
+After=network.target
+
+[Service]
+User=backupuser
+Group=www-data
+WorkingDirectory=/home/backupuser/flask
+Environment="PATH=/home/backupuser/flask/venv/bin"
+ExecStart=/home/backupuser/flask/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app:app
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### `/etc/nginx/sites-available/flaskapp`
+
+```nginx
+server {
+    listen 80;
+    server_name localhost;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+---
+
+# ✅ ¡Listo!
+
+Tu aplicación Flask ahora está desplegada con Gunicorn y Nginx, funcionando como servicio y accesible desde el navegador.
