@@ -103,17 +103,15 @@ sudo systemctl restart nginx
 - Sistema de notificaciones por email o Telegram si no hay backups recientes
 
 ```
-[Unit]
-Description=Flask App with Gunicorn
-After=network.target
+server {
+    listen 80;
+    server_name localhost;
 
-[Service]
-User=backupuser
-Group=www-data
-WorkingDirectory=/home/backupuser/flask
-Environment="PATH=/home/backupuser/flask/venv/bin"
-ExecStart=/home/backupuser/flask/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app:app
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
 
-[Install]
-WantedBy=multi-user.target
 ```
