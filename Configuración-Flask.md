@@ -104,92 +104,17 @@ sudo systemctl restart nginx
 
 
 
-``` html
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Visor de Backups</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #2ecc71;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .btn {
-            padding: 6px 12px;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        .icon {
-            font-size: 18px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Resumen de backups</h1>
+``` bash
+from flask import send_from_directory, abort
 
-    {% if equipos %}
-    <table>
-        <thead>
-            <tr>
-                <th>Equipo</th>
-                <th>Último backup</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for equipo in equipos %}
-            <tr>
-                <td>{{ equipo.nombre }}</td>
-                <td>{{ equipo.ultimo }}</td>
-                <td>{{ equipo.total }}</td>
-                <td class="icon">
-                    {% if equipo.total > 0 %}
-                        ✅
-                    {% else %}
-                        ❌
-                    {% endif %}
-                </td>
-                <td>
-                    {% if equipo.total > 0 %}
-                        <a href="/ver/{{ equipo.nombre }}" class="btn">Ver archivos</a>
-                    {% else %}
-                        <span style="color: gray;">Sin backups</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No se han encontrado equipos con backups.</p>
-    {% endif %}
-</body>
-</html>
-
+@app.route("/ver/<nombre_equipo>")
+def ver_archivos(nombre_equipo):
+    ruta_equipo = os.path.join(BACKUP_DIR, nombre_equipo)
+    if not os.path.exists(ruta_equipo):
+        abort(404)
+    archivos = os.listdir(ruta_equipo)
+    return "<h2>Archivos de backup de {}</h2><ul>{}</ul>".format(
+        nombre_equipo,
+        "".join(f"<li>{archivo}</li>" for archivo in archivos)
+    )
 ```
