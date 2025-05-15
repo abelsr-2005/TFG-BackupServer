@@ -101,3 +101,69 @@ sudo systemctl restart nginx
 
 - Añadir autenticación básica
 - Sistema de notificaciones por email o Telegram si no hay backups recientes
+
+
+
+``` html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Visor de Backups</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #2ecc71;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Resumen de backups</h1>
+
+    {% if equipos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Equipo</th>
+                <th>Último backup</th>
+                <th>Total de archivos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipo in equipos %}
+            <tr>
+                <td>{{ equipo.nombre }}</td>
+                <td>{{ equipo.ultimo }}</td>
+                <td>{{ equipo.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No se han encontrado equipos con backups.</p>
+    {% endif %}
+</body>
+</html>
+
+```
