@@ -1,7 +1,3 @@
-#!/bin/bash
-
-FECHA=$(date '+%Y-%m-%d %H:%M:%S')
-EQUIPO=$(hostname)
-
-echo "✅ Copia de seguridad del equipo $EQUIPO realizada correctamente en $FECHA" | \
-mail -s "📦 Backup completado - $EQUIPO" -r pctweaksoptimization@gmail.com pctweaksoptimization@gmail.com
+ocs-sr -q2 -j2 -z1p -i 2000 -scr -p true savedisk backup-$(date +%F) sda \
+&& scp -r /home/partimag/backup-$(date +%F) backupuser@192.168.1.100:/home/backupuser/backup-imagenes/EQUIPO01/ \
+&& ./post-backup.sh
