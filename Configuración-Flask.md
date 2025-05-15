@@ -101,3 +101,19 @@ sudo systemctl restart nginx
 
 - Añadir autenticación básica
 - Sistema de notificaciones por email o Telegram si no hay backups recientes
+
+```
+[Unit]
+Description=Flask App with Gunicorn
+After=network.target
+
+[Service]
+User=backupuser
+Group=www-data
+WorkingDirectory=/home/backupuser/flask
+Environment="PATH=/home/backupuser/flask/venv/bin"
+ExecStart=/home/backupuser/flask/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app:app
+
+[Install]
+WantedBy=multi-user.target
+```
