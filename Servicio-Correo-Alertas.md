@@ -29,7 +29,7 @@ Por tanto, este servicio de alertas se convierte en una herramienta clave para g
 sudo apt update
 sudo apt install postfix mailutils libsasl2-modules
 ```
-<br>
+
 - Conexión a Internet para enviar correos.
 
 ---
