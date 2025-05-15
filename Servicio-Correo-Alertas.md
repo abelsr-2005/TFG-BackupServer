@@ -100,7 +100,7 @@ sudo systemctl restart postfix
 ```bash
 echo "Correo de prueba" | mail -s "Asunto de prueba" tu_correo@gmail.com
 ```
-![Comprobación Correo de prueha](https://github.com/user-attachments/assets/c56bf701-de8f-4fdc-8473-47d843de21a9)
+![Comprobación Correo de prueha](https://github.com/user-attachments/assets/2fafb687-15df-4895-bb50-cc35571c33ae)
 
 ---
 
@@ -137,6 +137,10 @@ else
   exit 2
 fi
 ```
+
+## Comprobación.
+Lanzamos una nueva copia de seguridad y comprobamos que nos llega el correo de verificación.
+![Comprobación_copia_realizada](https://github.com/user-attachments/assets/9f5e1fcc-e318-4703-bfc4-1f6d98c00594)
 
 ---
 
