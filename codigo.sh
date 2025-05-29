@@ -1,41 +1,37 @@
-from flask import Flask, render_template, abort
-import os
-from datetime import datetime
-
-app = Flask(__name__, static_folder='/home/userbackups/bak', static_url_path='/static')
-BACKUP_DIR = '/home/userbackups/bak'
-
-@app.route('/')
-def index():
-    equipos = []
-    for nombre in sorted(os.listdir(BACKUP_DIR)):
-        ruta = os.path.join(BACKUP_DIR, nombre)
-        if os.path.isdir(ruta):
-            archivos = os.listdir(ruta)
-            total = len(archivos)
-            ultima_fecha = '--'
-            if archivos:
-                paths = [os.path.join(ruta, f) for f in archivos if os.path.isfile(os.path.join(ruta, f))]
-                if paths:
-                    ultima_fecha = max(os.path.getmtime(p) for p in paths)
-                    ultima_fecha = datetime.fromtimestamp(ultima_fecha).strftime('%d-%b-%Y %H:%M')
-            equipos.append({
-                'nombre': nombre,
-                'total': total,
-                'ultima_fecha': ultima_fecha
-            })
-    return render_template('index.html', equipos=equipos)
-
-@app.route('/ver/<equipo>')
-def ver_equipo(equipo):
-    ruta_equipo = os.path.join(BACKUP_DIR, equipo)
-    if not os.path.isdir(ruta_equipo):
-        return abort(404)
-    archivos = os.listdir(ruta_equipo)
-    archivos_info = []
-    for f in archivos:
-        path = os.path.join(ruta_equipo, f)
-        if os.path.isfile(path):
-            fecha = datetime.fromtimestamp(os.path.getmtime(path)).strftime('%d-%b-%Y %H:%M')
-            archivos_info.append({'nombre': f, 'fecha': fecha})
-    return render_template('archivos.html', equipo=equipo, archivos=archivos_info)
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Copias de Seguridad - Laboratorio</title>
+  <style>
+    body { font-family: sans-serif; background: #f8f8f8; padding: 2rem; }
+    table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 0 8px #ccc; border-radius: 8px; overflow: hidden; }
+    th, td { padding: 12px 16px; text-align: left; }
+    th { background-color: #d2f3e6; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+    a { color: #1f8f4c; text-decoration: none; font-weight: bold; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Copias de Seguridad - Laboratorio</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Equipo</th>
+        <th>Último Backup</th>
+        <th>Total de Archivos</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in equipos %}
+      <tr>
+        <td><a href="/ver/{{ e.nombre }}">{{ e.nombre }}</a></td>
+        <td>{{ e.ultima_fecha }}</td>
+        <td>{{ e.total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
